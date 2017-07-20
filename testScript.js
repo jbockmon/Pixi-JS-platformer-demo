@@ -3,14 +3,15 @@ let Container = PIXI.Container,
     autoDetectRenderer = PIXI.autoDetectRenderer,
     loader = PIXI.loader,
     resources = PIXI.loader.resources,
-    Sprite = PIXI.Sprite;
-
-//let keyObject = keyboard(asciiKeyCodeNumber);
-
+    Sprite = PIXI.Sprite,
+    TilingSprite = PIXI.extras.TilingSprite,
+    Texture = PIXI.Texture,
+    TextureCache = PIXI.utils.TextureCache,
+    Rectangle = PIXI.Rectangle;
 
 //Create stage and renderer 
 let stage = new Container();
-let renderer = autoDetectRenderer(800, 600);
+let renderer = autoDetectRenderer(1440, 176);
 document.body.appendChild(renderer.view);
 
 renderer.view.style.border = "1px solid black";
@@ -18,12 +19,17 @@ renderer.backgroundColor = "0xFFFFFF";
 
 //load the player sprite and setup function
 loader
-    .add("images/PNG/sprites/player/player-idle/player-idle-1.png")
+    .add([
+        "images/PNG/spritesheets/player/player-idle.png",
+        "images/PNG/environment/layers/background.png",
+        "images/PNG/environment/layers/middleground.png"
+    ])
+    .on("progress", loadProgressHandler)
     .load(setup);
 
-let playerSprite, state;
+let playerSprite, bgBack, bgFront, state;
 
-let playerGravity = 0.1,
+let playerGravity = 0.2,
     playerMoveSpeed = 2,
     playerJumpHeight = -4;
 
@@ -33,18 +39,38 @@ let left = keyboard(37),
     down = keyboard(40);
 
 function setup() {
-    playerSprite = new Sprite(resources["images/PNG/sprites/player/player-idle/player-idle-1.png"].texture);
     
-    //initial position
+    //Setting up the background
+    bgBack = new TilingSprite(resources["images/PNG/environment/layers/background.png"].texture, 1440, 176);
+    bgBack.position.x = 0;
+    bgBack.position.y = 0;
+    bgBack.tilePosition.x = 0;
+    bgBack.tilePosition.y = 0;
+    bgFront = new TilingSprite(resources["images/PNG/environment/layers/middleground.png"].texture, 1440, 176);
+    bgFront.position.x = 0;
+    bgFront.position.y = 0;
+    bgFront.tilePosition.x = 0;
+    bgFront.tilePosition.y = 0;
+    stage.addChild(bgBack);
+    stage.addChild(bgFront);
+    
+    //Setting up the player sprite
+    /*
+    let playerIdleTexture = TextureCache["images/PNG/spritesheets/player/player-idle.png"]
+    let rectangle = new Rectangle(29, 24, 20, 40);
+    playerIdleTexture.frame = rectangle;
+    playerSprite = new Sprite(playerIdleTexture);
+    //playerSprite = new Sprite(resources["images/PNG/sprites/player/player-idle/idleCrop.png"].texture);
+    */
+    playerSprite = new Sprite(frame("images/PNG/spritesheets/player/player-idle.png", 29, 24, 20, 40));
     playerSprite.x = 10;
     playerSprite.y = 10;
-    
-    //initial velocities
     playerSprite.vx = 0;
     playerSprite.vy = 0;
-    
     stage.addChild(playerSprite);
     
+    
+    //Key Handling
     //left key handling
     left.press = () => {
         playerSprite.vx = -playerMoveSpeed;
@@ -139,83 +165,34 @@ function play () {
     }
 }
 
-function keyboard(keyCode) {
-    let key = {};
-    key.code = keyCode;
-    key.isDown = false;
-    key.isUp = true;
-    key.press = undefined;
-    key.release = undefined;
+function frame(source, x, y, width, height) {
+    let texture, imageFrame;
     
-    //The `downHandler`
-    key.downHandler = event => {
-        if (event.keyCode === key.code) {
-            if (key.isUp && key.press) key.press();
-            key.isDown = true;
-            key.isUp = false;
+    //If the source is a string, it's either a texture in the
+    //cache or an image file
+    if (typeof source === "string") {
+        if (TextureCache[source]) {
+            texture = new Texture(TextureCache[source]);
         }
-        event.preventDefault();
-    };
+    }
+    //If the `source` is a texture, use it
+    else if (source instanceof Texture) {
+        texture = new Texture(source);
+    }
     
-    //The `upHandler`
-    key.upHandler = event => {
-        if (event.keyCode === key.code) {
-            if (key.isDown && key.release) key.release();
-            key.isDown = false;
-            key.isUp = true;
-        }
-        
-        event.preventDefault();
-    };
-    
-    //Attach event listeners
-    window.addEventListener(
-        "keydown", key.downHandler.bind(key), false
-    );
-
-    window.addEventListener(
-        "keyup", key.upHandler.bind(key), false
-    );
-
-    //Return the `key` object
-    return key;
+    if(!texture) {
+        console.log(`Please load the ${source} texture into the cache.`);
+    } else {
+        //Make a rectangle the size of the sub-image
+        imageFrame = new Rectangle(x, y, width, height);
+        texture.frame = imageFrame;
+        return texture;
+    }
 }
 
-function contain(sprite, container) {
 
-    //Create a `Set` called `collision` to keep track of the
-    //boundaries with which the sprite is colliding
-    var collision = new Set();
 
-    //Left
-    //If the sprite's x position is less than the container's x position,
-    //move it back inside the container and add "left" to the collision Set
-    if (sprite.x < container.x) {
-        sprite.x = container.x;
-        collision.add("left");
-    }
-
-    //Top
-    if (sprite.y < container.y) {
-        sprite.y = container.y;
-        collision.add("top");
-    }
-
-    //Right
-    if (sprite.x + sprite.width > container.width) {
-        sprite.x = container.width - sprite.width;
-        collision.add("right");
-    }
-
-    //Bottom
-    if (sprite.y + sprite.height > container.height) {
-        sprite.y = container.height - sprite.height;
-        collision.add("bottom");
-    }
-
-    //If there were no collisions, set `collision` to `undefined`
-    if (collision.size === 0) collision = undefined;
-
-    return collision;
+function loadProgressHandler(loader, resource) {
+    console.log("loading: " + resource.url);
+    console.log("progress: " + loader.progress);
 }
-
