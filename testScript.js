@@ -22,7 +22,8 @@ loader
     .add([
         "images/PNG/spritesheets/player/player-idle.png",
         "images/PNG/environment/layers/background.png",
-        "images/PNG/environment/layers/middleground.png"
+        "images/PNG/environment/layers/middleground.png",
+        "images/PNG/environment/layers/tilesets.png"
     ])
     .on("progress", loadProgressHandler)
     .load(setup);
@@ -54,21 +55,21 @@ function setup() {
     stage.addChild(bgBack);
     stage.addChild(bgFront);
     
-    //Setting up the player sprite
     /*
-    let playerIdleTexture = TextureCache["images/PNG/spritesheets/player/player-idle.png"]
-    let rectangle = new Rectangle(29, 24, 20, 40);
-    playerIdleTexture.frame = rectangle;
-    playerSprite = new Sprite(playerIdleTexture);
-    //playerSprite = new Sprite(resources["images/PNG/sprites/player/player-idle/idleCrop.png"].texture);
+    sprite = new Sprite(frame("images/PNG/environment/layers/tilesets.png", 336, 96, 16, 16));
+    sprite.x = 0;
+    sprite.y = 0;
+    stage.addChild(sprite);
     */
+    buildLevel(testLevel);
+    
+    //Setting up the player sprite
     playerSprite = new Sprite(frame("images/PNG/spritesheets/player/player-idle.png", 29, 24, 20, 40));
     playerSprite.x = 10;
     playerSprite.y = 10;
     playerSprite.vx = 0;
     playerSprite.vy = 0;
-    stage.addChild(playerSprite);
-    
+    stage.addChild(playerSprite);    
     
     //Key Handling
     //left key handling
@@ -114,6 +115,8 @@ function setup() {
         //need to add stand animation
         }
     };
+    
+    
     
     state = play;
     
@@ -171,8 +174,8 @@ function frame(source, x, y, width, height) {
     //If the source is a string, it's either a texture in the
     //cache or an image file
     if (typeof source === "string") {
-        if (TextureCache[source]) {
-            texture = new Texture(TextureCache[source]);
+        if (resources[source].texture){
+            texture = new Texture(resources[source].texture);
         }
     }
     //If the `source` is a texture, use it
@@ -191,8 +194,24 @@ function frame(source, x, y, width, height) {
 }
 
 
-
 function loadProgressHandler(loader, resource) {
     console.log("loading: " + resource.url);
     console.log("progress: " + loader.progress);
+}
+
+function buildLevel(level) {
+    let rows = 0,
+        cols = 0;
+    
+    for( rows = 0; rows < level.height; rows++){
+        for( cols = 0; cols < level.width; cols++){
+            let sprite = new Sprite(frame("images/PNG/environment/layers/tilesets.png", 336, 96, 16, 16));
+            if( level.layers[1].data[(level.width*rows+cols)] == 166){
+                sprite.x = cols * level.tilewidth;
+                sprite.y = rows * level.tileheight;
+                stage.addChild(sprite);
+                console.log(level.height*cols+rows + " X: " + sprite.x + " Y: " + sprite.y);
+            }    
+        }
+    }
 }
