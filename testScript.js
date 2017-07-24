@@ -28,7 +28,7 @@ loader
     .on("progress", loadProgressHandler)
     .load(setup);
 
-let playerSprite, bgBack, bgFront, state;
+let playerSprite, bgBack, bgFront, state, b, collSprites;
 
 let playerGravity = 0.2,
     playerMoveSpeed = 2,
@@ -55,21 +55,26 @@ function setup() {
     stage.addChild(bgBack);
     stage.addChild(bgFront);
     
-    /*
-    sprite = new Sprite(frame("images/PNG/environment/layers/tilesets.png", 336, 96, 16, 16));
-    sprite.x = 0;
-    sprite.y = 0;
-    stage.addChild(sprite);
-    */
-    buildLevel(testLevel);
+    collSprites = buildLevel(testLevel);
+    b = new Bump(PIXI);
     
     //Setting up the player sprite
     playerSprite = new Sprite(frame("images/PNG/spritesheets/player/player-idle.png", 29, 24, 20, 40));
+        
+    var lb = playerSprite.getLocalBounds();
+    playerSprite.hitArea = new Rectangle(lb.x-5, lb.y-1, lb.width-5, lb.height-1);
+    
+    
+    
     playerSprite.x = 10;
     playerSprite.y = 10;
+    
+    playerSprite.interactive = false;
     playerSprite.vx = 0;
     playerSprite.vy = 0;
-    stage.addChild(playerSprite);    
+    stage.addChild(playerSprite);   
+    
+    
     
     //Key Handling
     //left key handling
@@ -148,6 +153,15 @@ function play () {
         }
     );
     
+    //check for player on collArr collisions
+    
+    for(var i = 0; i < collSprites.length; i++){
+        if( b.hitTestRectangle(playerSprite, collSprites[i])){
+            b.rectangleCollision(playerSprite, collSprites[i], false);            
+        }    
+   }
+    
+    
     //Check for a collision. If the value of `collision` isn't
     //`undefined` then you know the sprite hit a boundary
     if (collision) {
@@ -158,7 +172,6 @@ function play () {
 
         //Stop up down movement in the event of up down collision
         if (collision.has("top") || collision.has("bottom")){
-            //if ( (playerSprite.vy >= 0.2) && (!right.isDown0)) playerSprite.vx = 0;
             playerSprite.vy = 0;
             
             //Special case to allow player to continue running after jump
@@ -166,6 +179,11 @@ function play () {
                 playerSprite.vx = 0; 
         }
     }
+    
+    
+    
+    
+    
 }
 
 function frame(source, x, y, width, height) {
@@ -202,6 +220,7 @@ function loadProgressHandler(loader, resource) {
 function buildLevel(level) {
     let rows = 0,
         cols = 0;
+    let collArr = [];
     
     for( rows = 0; rows < level.height; rows++){
         for( cols = 0; cols < level.width; cols++){
@@ -210,8 +229,10 @@ function buildLevel(level) {
                 sprite.x = cols * level.tilewidth;
                 sprite.y = rows * level.tileheight;
                 stage.addChild(sprite);
-                console.log(level.height*cols+rows + " X: " + sprite.x + " Y: " + sprite.y);
+                collArr.push(sprite);
             }    
         }
     }
+    
+    return collArr;
 }
