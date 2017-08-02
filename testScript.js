@@ -7,7 +7,8 @@ let Container = PIXI.Container,
     TilingSprite = PIXI.extras.TilingSprite,
     Texture = PIXI.Texture,
     TextureCache = PIXI.utils.TextureCache,
-    Rectangle = PIXI.Rectangle;
+    Rectangle = PIXI.Rectangle,
+    MovieClip = PIXI.extras.MovieClip;
 
 //Create stage and renderer 
 let stage = new Container();
@@ -27,12 +28,13 @@ loader
         "images/PNG/environment/layers/middleground.png",
         "images/PNG/environment/layers/tilesets.png",
         "images/PNG/environment/layers/props.png",
-        "images/PNG/levels/Level1v2.png"
+        "images/PNG/levels/Level1v2.png",
+        "images/PNG/spritesheets/enemies/octopus.png"
     ])
     .on("progress", loadProgressHandler)
     .load(setup);
 
-let playerSprite, bgBack, bgFront, state, b, collSprites;
+let playerSprite,enemySprite, bgBack, bgFront, state, b, collSprites;
 
 let playerGravity = 0.2,
     playerMoveSpeed = 2,
@@ -89,9 +91,12 @@ function setup() {
     //playerSprite.scale.set(4,4);
     
     stage.addChild(playerSprite);   
+    enemySprite = new Sprite(frame("images/PNG/spritesheets/enemies/octopus.png",0,0,28,37));
+    //enemySprite = new Sprite(enemyTexture);
     
-    
-    
+    enemySprite.x = 30;
+    enemySprite.y = 50;
+    stage.addChild(enemySprite);
     //Key Handling
     //left key handling
     left.press = () => {
