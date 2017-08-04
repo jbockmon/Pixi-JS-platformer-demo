@@ -630,17 +630,12 @@ class Bump {
           //Bounce
           if (bounce) {
             r1.vy *= -1;
-
-            /*Alternative
-            //Find the bounce surface's vx and vy properties
-            var s = {};
-            s.vx = r2.x - r2.x + r2.width;
-            s.vy = 0;
-            //Bounce r1 off the surface
-            //this.bounceOffSurface(r1, s);
-            */
-
-          }
+          }            
+            //Special case to allow player to continue running after jump
+            if (!(right.isDown || left.isDown)){
+                r1.vx = 0; 
+            }
+            
         } else {
           //The collision is happening on the Y axis
           //But on which side? vx can tell us
