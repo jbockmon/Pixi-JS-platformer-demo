@@ -1,15 +1,18 @@
 function setup() {
     //stage.position sets where the game attaches to the canvas.
-    //stage.position.set(0, 0);
+    stage.position.set(0, 0);
+    //stage.scale.set(3)
+
     //stage.pivot.set moves the camera. 
     //stage.pivot.set(0, 0);
     
     //Setting up the background
-    bgBack = new TilingSprite(resources["images/PNG/environment/layers/background.png"].texture, 1440, 176);
+    //bgBack = new TilingSprite(resources["images/PNG/environment/layers/background.png"].texture, 1440, 176);
+    bgBack = new Sprite(resources["images/PNG/environment/layers/background.png"].texture);
     bgBack.position.x = 0;
     bgBack.position.y = 0;
-    bgBack.tilePosition.x = 0;
-    bgBack.tilePosition.y = 0;
+    //bgBack.tilePosition.x = 0;
+    //bgBack.tilePosition.y = 0;
     
     bgFront = new TilingSprite(resources["images/PNG/environment/layers/middleground.png"].texture, 1440, 176);
     bgFront.position.x = 0;
@@ -53,10 +56,9 @@ function setup() {
     
     var lb = playerSprite.getLocalBounds();
     playerSprite.hitArea = new Rectangle(lb.x-5, lb.y-1, lb.width-5, lb.height-1); 
-
     
     //Set starting position
-    playerSprite.x = 10;
+    playerSprite.x = 20;
     playerSprite.y = 80;
     
     playerSprite.interactive = false;
@@ -134,10 +136,7 @@ function setup() {
         }
     };
     
-    
-    //stage.scale.set(3)
     state = play;
-    
     gameLoop();
     
 }
