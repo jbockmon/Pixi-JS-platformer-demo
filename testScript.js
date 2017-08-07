@@ -13,8 +13,11 @@ let Container = PIXI.Container,
 //Global Variables
 //Create stage and renderer 
 let stage = new Container();
-let renderer = autoDetectRenderer(1440, 176);
+
+//let renderer = autoDetectRenderer(1440, 176);
 //let renderer = autoDetectRenderer(720, 528);
+let renderer = autoDetectRenderer(240, 176)
+
 
 document.body.appendChild(renderer.view);
 renderer.view.style.border = "1px solid black";
@@ -23,7 +26,8 @@ renderer.backgroundColor = "0xFFFFFF";
 let playerSprite, bgBack, bgFront, state, b, collSprites,
     idleTextures, runTextures, jumpTextures;
 
-let playerGravity = 0.2,
+let stageWidth = 1440,
+    playerGravity = 0.2,
     playerMoveSpeed = 2,
     playerJumpHeight = -4;
 
@@ -86,9 +90,23 @@ function play () {
             playerSprite.animationSpeed = 0.15;
             playerSprite.play();
         }
+    changePivot();
+    
+
 }
 
 function loadProgressHandler(loader, resource) {
     console.log("loading: " + resource.url);
     console.log("progress: " + loader.progress);
+}
+
+function changePivot(){
+    var xPivot = playerSprite.x - renderer.width / 2; 
+    if (xPivot < 0 )
+        xPivot = 0;
+    if(xPivot > stageWidth - renderer.width)
+        xPivot = stageWidth - renderer.width;
+    stage.pivot.set(xPivot, 0);
+    bgBack.position.x = xPivot;
+    bgFront.position.x = xPivot/2;
 }
