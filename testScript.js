@@ -45,6 +45,29 @@ let left = keyboard(37),
     right = keyboard(39),
     down = keyboard(40);
 
+// virtual key functions
+
+let vUp, vDown, vLeft, vRight;
+
+vUp = (presses, wait) => {
+    for(let i = 0; i < presses; i++){
+        if(playerSprite.vy !== 0 && wait){
+        }
+        playerSprite.vy = playerJumpHeight;
+    }
+}
+vLeft = (presses, wait) => {
+    for(let i = 0; i < presses; i++){
+        playerSprite.x = playerSprite.x - playerMoveSpeed;
+    }
+    playerSprite.vx = 0;
+}
+vRight = (presses, wait) => {
+    for(let i = 0; i < presses; i++){
+        playerSprite.x = playerSprite.x - playerMoveSpeed;
+    }
+    playerSprite.vx = 0;
+}
 function setup() {
     //stage.position sets where the game attaches to the canvas.
     //stage.position.set(0, 0);
@@ -143,6 +166,7 @@ function setup() {
     };
     
     
+    //
     
     state = play;
     
