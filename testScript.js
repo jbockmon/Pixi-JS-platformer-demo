@@ -47,7 +47,7 @@ let left = keyboard(37),
 
 // virtual key functions
 
-let vUp, vDown, vLeft, vRight;
+let vUp, vUpRight, vDown, vLeft, vRight;
 
 vUp = (presses, wait) => {
     for(let i = 0; i < presses; i++){
@@ -55,6 +55,15 @@ vUp = (presses, wait) => {
         }
         playerSprite.vy = playerJumpHeight;
     }
+}
+vUpRight = (presses, wait) => {
+    for(let i = 0; i < presses; i++){
+        if(playerSprite.vy !== 0 && wait){
+        }
+        playerSprite.vy = playerJumpHeight;
+        playerSprite.vx = playerMoveSpeed;
+    }
+    playerSprite.vx = 0;
 }
 vLeft = (presses, wait) => {
     for(let i = 0; i < presses; i++){
