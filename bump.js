@@ -38,8 +38,6 @@ class Bump {
 
           //centerX
           if (sprite.centerX === undefined) {
-              console.log(sprite.x + " " + sprite.hitArea.x + " " + sprite.hitArea.height);
-              console.log(sprite.x + sprite.hitArea.x + sprite.hitArea.width / 2);
             Object.defineProperty(sprite, "centerX", {
               get(){return sprite.x + sprite.hitArea.x + sprite.hitArea.width / 2},
               enumerable: true, configurable: true
@@ -48,15 +46,11 @@ class Bump {
 
           //centerY
           if (sprite.centerY === undefined) {
-              console.log(sprite.y + " " + sprite.hitArea.y + " " + sprite.hitArea.height);
-              console.log(sprite.y + sprite.hitArea.y + sprite.hitArea.height / 2);
             Object.defineProperty(sprite, "centerY", {
               get(){return sprite.y + sprite.hitArea.y + sprite.hitArea.height / 2},
               enumerable: true, configurable: true
             });
           }
-            console.log(sprite.centerY);
-            console.log(sprite);
 
           //halfWidth
           if (sprite.halfWidth === undefined) {
@@ -65,8 +59,6 @@ class Bump {
               enumerable: true, configurable: true
             });
           }
-            console.log(sprite.centerY);
-            console.log(sprite);
 
           //halfHeight
           if (sprite.halfHeight === undefined) {
@@ -75,7 +67,6 @@ class Bump {
               enumerable: true, configurable: true
             });
           }
-            console.log(sprite.centerY);
 
           //xAnchorOffset
           if (sprite.xAnchorOffset === undefined) {
@@ -90,7 +81,6 @@ class Bump {
               enumerable: true, configurable: true
             });
           }
-            console.log(sprite.centerY);
 
           //yAnchorOffset
           if (sprite.yAnchorOffset === undefined) {
@@ -105,7 +95,6 @@ class Bump {
               enumerable: true, configurable: true
             });
           }
-            console.log(sprite.centerY);
 
           if (sprite.circular && sprite.radius === undefined) {
             Object.defineProperty(sprite, "radius", {
@@ -114,7 +103,6 @@ class Bump {
             });
           }
             
-            console.log(sprite.centerY);
             
         }else{
           //gx
@@ -602,10 +590,7 @@ class Bump {
     //Figure out the combined half-widths and half-heights
     combinedHalfWidths = Math.abs(r1.halfWidth) + Math.abs(r2.halfWidth);
     combinedHalfHeights = Math.abs(r1.halfHeight) + Math.abs(r2.halfHeight);
-        
-    //console.log(Math.abs(vx) + " " + combinedHalfWidths);
-    //console.log(Math.abs(vx) + " " + Math.abs(vy));
-        
+
     //Check whether vx is less than the combined half widths
     if (Math.abs(vx) < combinedHalfWidths) {
 

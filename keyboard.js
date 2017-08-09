@@ -1,3 +1,5 @@
+//This function sets up the keyboard input event listeners
+
 function keyboard(keyCode) {
     let key = {};
     key.code = keyCode;
@@ -6,24 +8,25 @@ function keyboard(keyCode) {
     key.press = undefined;
     key.release = undefined;
     
-    //The `downHandler`
+    //The downHandler
     key.downHandler = event => {
         if (event.keyCode === key.code) {
             if (key.isUp && key.press) key.press();
             key.isDown = true;
             key.isUp = false;
         }
+        //prevents page reload
         event.preventDefault();
     };
     
-    //The `upHandler`
+    //The upHandler
     key.upHandler = event => {
         if (event.keyCode === key.code) {
             if (key.isDown && key.release) key.release();
             key.isDown = false;
             key.isUp = true;
         }
-        
+        //prevents page reload
         event.preventDefault();
     };
     

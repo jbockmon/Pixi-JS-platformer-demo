@@ -1,3 +1,5 @@
+//Creates a JSON obect for level creations
+
 var testLevel = { "height":11,
  "layers":[
         {

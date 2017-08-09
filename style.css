@@ -1,0 +1,26 @@
+body {
+    font-family: 'Roboto Slab', serif;
+    background-color: black;
+    color: white;
+}
+
+.container{
+    background-image: url("images/arcade.png");
+    width: 583px;
+    height: 1094px;
+    margin: auto;
+}
+
+h1{
+    text-align: center;
+}
+
+p{
+    text-align: center;
+}
+
+#gameDiv {
+    width: 248px;
+    margin: auto;
+    padding-top: 260px;
+}

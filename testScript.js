@@ -10,17 +10,14 @@ let Container = PIXI.Container,
     Rectangle = PIXI.Rectangle,
     MovieClip = PIXI.extras.MovieClip;
 
-//Global Variables
-//Create stage and renderer 
+////////////////Global Variables////////////////////////////////////
 let stage = new Container();
+let renderer = autoDetectRenderer(240, 176);
 
-//let renderer = autoDetectRenderer(1440, 176);
-//let renderer = autoDetectRenderer(720, 528);
-let renderer = autoDetectRenderer(240, 176)
-
-
-document.body.appendChild(renderer.view);
-renderer.view.style.border = "1px solid black";
+//Put renderer into web page
+document.getElementById("gameDiv").appendChild(renderer.view); 
+renderer.view.style.border = "4px solid black";
+renderer.view.style.borderRadius = "10px";
 renderer.backgroundColor = "0xFFFFFF";
 
 let playerSprite, bgBack, bgFront, state, b, collSprites,
@@ -35,10 +32,9 @@ let left = keyboard(37),
     up = keyboard(38),
     right = keyboard(39),
     down = keyboard(40);
+///////////////////////////////////////////////////////////////////
 
-let su = new SpriteUtilities(PIXI);
-
-//load the player sprite and setup function
+//loads assets into memory
 loader
     .add([
         "images/PNG/spritesheets/player/player-idle.png",
@@ -53,22 +49,27 @@ loader
     .on("progress", loadProgressHandler)
     .load(setup);
 
+//Main loop
+//Checks states and updates the image on screen
 function gameLoop(){
     requestAnimationFrame(gameLoop);
     state();
     renderer.render(stage);
 }
 
+//Applies gravity and movement. 
+//Checks collisions and checks camera position
+//All checks locked at display refresh interval
 function play () {
-        
-    //Gravity
+    //Apply gravity every frame
     playerSprite.vy += playerGravity;
     
     //Movement
     playerSprite.x += playerSprite.vx;
     playerSprite.y += playerSprite.vy;
 
-    //Collision checking for player against level
+    //Collision checking for player against level.
+    //Only checks against collSprites array for collisions
     for(var i = 0; i < collSprites.length; i++){
         if( b.hitTestRectangle(playerSprite, collSprites[i])){
             b.rectangleCollision(playerSprite, collSprites[i], false);            
@@ -91,15 +92,16 @@ function play () {
             playerSprite.play();
         }
     changePivot();
-    
-
 }
 
+//Outputs load progress to console
 function loadProgressHandler(loader, resource) {
     console.log("loading: " + resource.url);
     console.log("progress: " + loader.progress);
 }
 
+//Checks the player position in the level and adjusts camera accordingly
+//Has checks to make sure camera does not go out of the level.
 function changePivot(){
     var xPivot = playerSprite.x - renderer.width / 2; 
     if (xPivot < 0 )
@@ -109,4 +111,10 @@ function changePivot(){
     stage.pivot.set(xPivot, 0);
     bgBack.position.x = xPivot;
     bgFront.position.x = xPivot/2;
+}
+
+//Updates the hitbox areas 
+function updatehitArea(){
+    var lb = playerSprite.getLocalBounds();
+    playerSprite.hitArea = new Rectangle(lb.x-5, lb.y-1, lb.width-5, lb.height-1); 
 }

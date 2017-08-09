@@ -1,3 +1,9 @@
+//Takes a JSON level object and parses it for different tiles.
+//Tiles of type 0 are are disregarded as empty space
+//Tiles of type 1 are invisible and are used for creating collisions between player and the level
+//All other tiles are rendered with special cases for tile rotation and transformation
+//Returns an array of tiles that should be checked for collisions
+
 function buildLevel(level) {
     let rows = 0,
         cols = 0,
@@ -11,7 +17,7 @@ function buildLevel(level) {
         for( rows = 0; rows < level.height; rows++){
             for( cols = 0; cols < level.width; cols++){
                 
-                // setting up iterator and tilex and tiley for clarity
+                // setting up iterator and tileX and tileY for clarity
                 i = (level.width*rows+cols);     
                 tx = (((level.layers[layer].data[i] % 24) * level.tilewidth) - level.tilewidth);
                 ty = (Math.floor(level.layers[layer].data[i]/24) * level.tilewidth)
@@ -27,6 +33,8 @@ function buildLevel(level) {
                         stage.addChild(sprite);
                         collArr.push(sprite);
                         break;  
+                    //The rest of the tiles do not get added to collision array to save cpu cycles on collision checks
+                    //Special case tile transformations
                     case 316:
                         sprite = new Sprite(frame("images/PNG/environment/layers/props.png", 192, 16, 16, 16));
                         sprite.x = cols * level.tilewidth;
@@ -169,18 +177,15 @@ function buildLevel(level) {
                         sprite.y = rows * level.tileheight;
                         stage.addChild(sprite);
                         break;
-                    //The rest of the tiles do not get added to collision array to save cpu cycles
+                    //All regular tiles pulled from tilesheet. Position calculuation based on tile number in JSON file
                     default:
                         sprite = new Sprite(frame("images/PNG/environment/layers/tilesets.png", tx, ty, level.tilewidth,            level.tilewidth));
                         sprite.x = cols * level.tilewidth;
                         sprite.y = rows * level.tileheight;
                         stage.addChild(sprite);
-                   
                 }
             }
-        }
-        
+        }   
     }
-    
     return collArr;
 }

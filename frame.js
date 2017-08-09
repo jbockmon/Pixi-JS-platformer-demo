@@ -1,3 +1,6 @@
+//This function takes x and y coords, texture width and texture height and a texture image
+//and cuts a sub texture out using the coords, and width and height, then returns the sub frame as its own texture
+
 function frame(source, x, y, width, height) {
     let texture, imageFrame;
     
@@ -8,7 +11,7 @@ function frame(source, x, y, width, height) {
             texture = new Texture(resources[source].texture);
         }
     }
-    //If the `source` is a texture, use it
+    //If the source is a texture, use it
     else if (source instanceof Texture) {
         texture = new Texture(source);
     }

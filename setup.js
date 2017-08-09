@@ -1,20 +1,15 @@
+//Sets up the sprite textures and positioning for the level, and adds them to the stage
+//Also sets up the key handling events
+
 function setup() {
     //stage.position sets where the game attaches to the canvas.
     stage.position.set(0, 0);
-    //stage.scale.set(3)
 
-    //stage.pivot.set moves the camera. 
-    //stage.pivot.set(0, 0);
-    
-    //Setting up the background
-
-    //bgBack = new TilingSprite(resources["images/PNG/environment/layers/background.png"].texture, 1440, 176);
+    //Background back image is fixed to the camera for parallax scrolling
     bgBack = new Sprite(resources["images/PNG/environment/layers/background.png"].texture);
     bgBack.position.x = 0;
     bgBack.position.y = 0;
-    //bgBack.tilePosition.x = 0;
-    //bgBack.tilePosition.y = 0;
-    
+    //Background front image is tiled to allow for scrolling while the player moves
     bgFront = new TilingSprite(resources["images/PNG/environment/layers/middleground.png"].texture, 1440, 176);
     bgFront.position.x = 0;
     bgFront.position.y = 0;
@@ -27,13 +22,12 @@ function setup() {
     collSprites = buildLevel(testLevel);
     b = new Bump(PIXI);
     
-    //Setting up the player sprite  
+    ////////////Setting up the player sprite  ///////////////////////////////////////////////////
     
     idleTextures = [    frame("images/PNG/spritesheets/player/player-idle.png",  29, 24, 20, 40), 
                         frame("images/PNG/spritesheets/player/player-idle.png", 110, 24, 20, 40),
                         frame("images/PNG/spritesheets/player/player-idle.png", 191, 24, 20, 40),
                         frame("images/PNG/spritesheets/player/player-idle.png", 270, 24, 20, 40)];
-    
     runTextures = [     frame("images/PNG/spritesheets/player/player-run.png",  27, 27, 36, 36), 
                         frame("images/PNG/spritesheets/player/player-run.png", 109, 27, 20, 36),
                         frame("images/PNG/spritesheets/player/player-run.png", 184, 27, 36, 36),
@@ -43,20 +37,16 @@ function setup() {
                         frame("images/PNG/spritesheets/player/player-run.png", 584, 27, 36, 36),
                         frame("images/PNG/spritesheets/player/player-run.png", 661, 27, 36, 36),
                         frame("images/PNG/spritesheets/player/player-run.png", 745, 27, 36, 36)];
-    
     jumpTextures = [    frame("images/PNG/spritesheets/player/player-jump.png", 106, 26, 28, 38),
                         frame("images/PNG/spritesheets/player/player-jump.png", 186, 26, 28, 38),
                         frame("images/PNG/spritesheets/player/player-jump.png", 266, 26, 28, 38),
                         frame("images/PNG/spritesheets/player/player-jump.png", 346, 26, 28, 38),
                         frame("images/PNG/spritesheets/player/player-jump.png", 426, 26, 28, 38)];
     
-          
     playerSprite = new PIXI.extras.AnimatedSprite(idleTextures);
+    updatehitArea();
     playerSprite.animationSpeed = 0.06;
     playerSprite.play();
-    
-    var lb = playerSprite.getLocalBounds();
-    playerSprite.hitArea = new Rectangle(lb.x-5, lb.y-1, lb.width-5, lb.height-1); 
     
     //Set starting position
     playerSprite.x = 20;
@@ -67,6 +57,8 @@ function setup() {
     playerSprite.vy = 0;
     
     stage.addChild(playerSprite);   
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     
     //Key Handling Setup
     //left key handling
@@ -136,11 +128,7 @@ function setup() {
         //need to add stand animation
         }
     };
-    
-    
-    //stage.scale.set(3)
 
     state = play;
     gameLoop();
-    
 }
