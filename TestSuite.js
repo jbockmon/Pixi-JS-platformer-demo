@@ -35,13 +35,13 @@
             });
         });
         describe('Stage', function(){
-            it('Should have 3 items added',function(){
+            xit('Should have 3 items added',function(){
                 expect(stage.children).to.have.lengthOf(3);
             });
         });
         describe('Global Variables', function(){
-            it('Should have 3 items added',function(){
-                expect(stage.children).to.have.lengthOf(3);
+            xit('Should have 3 items added',function(){
+                //expect(stage.children).to.have.lengthOf(3);
             });
         });
         describe('Player Sprite', function(){
