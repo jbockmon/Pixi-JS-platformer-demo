@@ -26,7 +26,8 @@ let playerSprite, bgBack, bgFront, state, b, collSprites,
 let stageWidth = 1440,
     playerGravity = 0.2,
     playerMoveSpeed = 2,
-    playerJumpHeight = -4;
+    playerJumpHeight = -4,
+    winCondition = false;
 
 let left = keyboard(37),
     up = keyboard(38),
@@ -52,9 +53,15 @@ loader
 //Main loop
 //Checks states and updates the image on screen
 function gameLoop(){
-    requestAnimationFrame(gameLoop);
-    state();
-    renderer.render(stage);
+    if(!winCondition){
+        requestAnimationFrame(gameLoop);
+        state();
+        renderer.render(stage);    
+    }else {
+        state = win;
+        state();
+    }
+    
 }
 
 //Applies gravity and movement. 
@@ -91,7 +98,23 @@ function play () {
             playerSprite.animationSpeed = 0.15;
             playerSprite.play();
         }
+    
+    //update camera position
     changePivot();
+    
+    //Win Condition = player exits stage to right
+    if(playerSprite.x >= stageWidth){
+        winCondition = true;
+    }
+}
+
+//State of the game after win condition is obtained
+function win() {
+    let message = new PIXI.Text("YOU WIN!",{fontFamily : 'Impact', fontSize: 48, fill : "white", align : 'center', stroke: "black", strokeThickness: 6});
+    message.x = playerSprite.x - renderer.width + (renderer.width - message.width)/2;
+    message.y = renderer.view.height / 2 - message.height / 2;
+    stage.addChild(message);
+    renderer.render(stage);
 }
 
 //Outputs load progress to console
